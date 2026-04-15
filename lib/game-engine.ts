@@ -36,6 +36,11 @@ export interface GameEngineState {
   obstacles: Obstacle[];
   gameTime: number;
   frameCount: number;
+  combo: number;
+  coinsCollected: number;
+  totalCoins: number;
+  isPaused: boolean;
+  countdownTime: number;
 }
 
 export class GameEngine {
@@ -63,7 +68,7 @@ export class GameEngine {
   private onCollision: (() => void) | null = null;
   private onScoreIncrease: ((score: number) => void) | null = null;
 
-  constructor(highScore: number = 0) {
+  constructor(highScore: number = 0, totalCoins: number = 0) {
     this.state = {
       state: "idle",
       score: 0,
@@ -83,6 +88,11 @@ export class GameEngine {
       obstacles: [],
       gameTime: 0,
       frameCount: 0,
+      combo: 0,
+      coinsCollected: 0,
+      totalCoins,
+      isPaused: false,
+      countdownTime: 3000,
     };
   }
 
@@ -118,7 +128,7 @@ export class GameEngine {
   }
 
   /**
-   * Start the game
+   * Start the game with countdown
    */
   public start(): void {
     this.state.state = "playing";
@@ -128,6 +138,10 @@ export class GameEngine {
     this.state.gameTime = 0;
     this.state.frameCount = 0;
     this.state.obstacles = [];
+    this.state.combo = 0;
+    this.state.coinsCollected = 0;
+    this.state.isPaused = false;
+    this.state.countdownTime = 3000; // 3 second countdown
     this.state.player.velocityY = 0;
     this.state.player.isJumping = false;
     this.state.player.isSliding = false;
@@ -142,6 +156,34 @@ export class GameEngine {
    * Pause the game
    */
   public pause(): void {
+    if (this.state.state === "playing" && !this.state.isPaused) {
+      this.state.isPaused = true;
+      this.emitStateChange();
+    }
+  }
+
+  /**
+   * Resume the game
+   */
+  public resumeGame(): void {
+    if (this.state.state === "playing" && this.state.isPaused) {
+      this.state.isPaused = false;
+      this.lastFrameTime = Date.now();
+      this.emitStateChange();
+    }
+  }
+
+  /**
+   * Check if game is paused
+   */
+  public isPaused(): boolean {
+    return this.state.isPaused;
+  }
+
+  /**
+   * Stop the game loop (old pause method)
+   */
+  public stopGameLoop(): void {
     if (this.gameLoopId !== null) {
       cancelAnimationFrame(this.gameLoopId);
       this.gameLoopId = null;
@@ -240,6 +282,20 @@ export class GameEngine {
    * Private: Update game state
    */
   private update(deltaTime: number): void {
+    // Skip update if paused
+    if (this.state.isPaused) {
+      return;
+    }
+
+    // Handle countdown
+    if (this.state.countdownTime > 0) {
+      this.state.countdownTime -= deltaTime * 1000;
+      if (this.state.countdownTime <= 0) {
+        this.state.countdownTime = 0;
+      }
+      return; // Don't update game logic during countdown
+    }
+
     // Update game time
     this.state.gameTime += deltaTime * 1000;
     this.state.frameCount++;
@@ -474,7 +530,16 @@ export class GameEngine {
    */
   private updateScore(): void {
     const previousScore = this.state.score;
-    this.state.score = Math.floor(this.state.gameTime / 100); // 1 point per 100ms
+    // Base score: 1 point per 100ms
+    // Combo bonus: +1 point per combo level every 500ms
+    const comboBonus = Math.floor((this.state.gameTime / 500) * this.state.combo);
+    this.state.score = Math.floor(this.state.gameTime / 100) + comboBonus;
+
+    // Increase combo every 5 seconds of survival
+    const timeSinceLastCombo = this.state.gameTime % 5000;
+    if (timeSinceLastCombo < 100) {
+      this.state.combo = Math.floor(this.state.gameTime / 5000) + 1;
+    }
 
     if (this.state.score > previousScore && this.state.score % 10 === 0) {
       if (this.onScoreIncrease) {

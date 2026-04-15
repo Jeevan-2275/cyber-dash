@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, Text, Pressable, GestureResponderEvent, Dimensions } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 import { GameEngine, GameEngineState } from "@/lib/game-engine";
@@ -136,6 +136,26 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
             </Text>
           </View>
 
+          {/* Combo */}
+          {gameState.combo > 0 && (
+            <View className="items-center">
+              <Text style={{ fontSize: 12, color: "#FF006E" }}>COMBO</Text>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  color: "#FF006E",
+                  marginTop: 4,
+                  textShadowColor: "#FF006E",
+                  textShadowOffset: { width: 0, height: 0 },
+                  textShadowRadius: 4,
+                }}
+              >
+                x{gameState.combo}
+              </Text>
+            </View>
+          )}
+
           {/* Speed Multiplier */}
           <View className="items-center">
             <Text style={{ fontSize: 12, color: colors.muted }}>SPEED</Text>
@@ -211,6 +231,105 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
                 elevation: 8,
               }}
             />
+          )}
+
+          {/* Countdown Overlay */}
+          {gameState.countdownTime > 0 && (
+            <View
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 100,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 80,
+                  fontWeight: "bold",
+                  color: "#00D9FF",
+                  textShadowColor: "#00D9FF",
+                  textShadowOffset: { width: 0, height: 0 },
+                  textShadowRadius: 20,
+                }}
+              >
+                {Math.ceil(gameState.countdownTime / 1000)}
+              </Text>
+            </View>
+          )}
+
+          {/* Pause Button */}
+          <Pressable
+            onPress={() => {
+              if (gameEngineRef.current && !gameState.isPaused) {
+                gameEngineRef.current.pause();
+              }
+            }}
+            style={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              zIndex: 50,
+              padding: 12,
+              backgroundColor: "rgba(0, 217, 255, 0.2)",
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: "#00D9FF",
+            }}
+          >
+            <Text style={{ color: "#00D9FF", fontWeight: "bold", fontSize: 12 }}>
+              {gameState.isPaused ? "RESUME" : "PAUSE"}
+            </Text>
+          </Pressable>
+
+          {/* Pause Menu */}
+          {gameState.isPaused && (
+            <View
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.8)",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 100,
+              }}
+            >
+              <View style={{ gap: 16 }}>
+                <Text
+                  style={{
+                    fontSize: 40,
+                    fontWeight: "bold",
+                    color: "#00D9FF",
+                    textAlign: "center",
+                    textShadowColor: "#00D9FF",
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 10,
+                  }}
+                >
+                  PAUSED
+                </Text>
+                <Pressable
+                  onPress={() => {
+                    if (gameEngineRef.current) {
+                      gameEngineRef.current.resumeGame();
+                    }
+                  }}
+                  style={{
+                    paddingVertical: 12,
+                    paddingHorizontal: 32,
+                    backgroundColor: "#00D9FF",
+                    borderRadius: 8,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ color: "#000", fontWeight: "bold", fontSize: 16 }}>
+                    RESUME
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
           )}
 
           {/* Obstacles */}

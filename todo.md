@@ -78,3 +78,37 @@
 
 **Status**: MVP Complete - Ready for Testing & Deployment
 **Last Updated**: April 15, 2026
+
+
+## Enhancement Phase 1: Game Engine Improvements
+- [x] Improve difficulty scaling (smooth speed/frequency increase)
+- [x] Implement combo/streak system
+- [ ] Add near-miss bonus system
+- [ ] Add coin collection system
+- [x] Enhance obstacle variety (low, high, moving types)
+
+## Enhancement Phase 2: Progression System
+- [ ] Implement coin currency system
+- [ ] Create unlockable player skins
+- [ ] Build upgrade system (speed boost, shield)
+- [ ] Add progression persistence (AsyncStorage)
+
+## Enhancement Phase 3: Visual & Audio Polish
+- [ ] Implement particle effects (trails, explosions)
+- [ ] Add screen shake on collision
+- [ ] Enhance glow and lighting effects
+- [ ] Improve audio sync with gameplay
+- [ ] Add dynamic sound effects
+
+## Enhancement Phase 4: UX Features
+- [x] Add pause/resume functionality
+- [x] Implement countdown before game start (3,2,1)
+- [ ] Improve Game Over screen
+- [ ] Add onboarding overlay
+- [x] Add settings/pause menu
+
+## Enhancement Phase 5: Performance & Polish
+- [ ] Optimize all new features
+- [ ] Test on multiple devices
+- [ ] Ensure 60 FPS gameplay
+- [ ] Final code cleanup
