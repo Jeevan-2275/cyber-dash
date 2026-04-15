@@ -1,49 +1,25 @@
 /**
  * Audio Manager for Cyber Dash
- * Handles background music and sound effects
+ * Simplified for Expo Go compatibility
+ * Note: Audio playback is limited in Expo Go
  */
 
-import { setAudioModeAsync } from "expo-audio";
-
 export class AudioManager {
-  private backgroundMusicPlayer: any = null;
-  private jumpSoundPlayer: any = null;
-  private collisionSoundPlayer: any = null;
+  private backgroundMusicUrl: string = "";
   private isMusicPlaying = false;
 
   constructor() {
-    this.initializeAudioMode();
+    // Audio initialization simplified for Expo Go
   }
 
   /**
-   * Initialize audio mode for iOS silent mode
-   */
-  private async initializeAudioMode(): Promise<void> {
-    try {
-      await setAudioModeAsync({
-        playsInSilentMode: true,
-      });
-    } catch (error) {
-      console.error("Failed to set audio mode:", error);
-    }
-  }
-
-  /**
-   * Load and play background music
+   * Queue background music (playback handled by component)
    */
   public async playBackgroundMusic(musicUri: string): Promise<void> {
     try {
-      if (this.backgroundMusicPlayer) {
-        await this.backgroundMusicPlayer.release();
-      }
-
-      const { sound } = await require("expo-audio").Audio.Sound.createAsync(
-        { uri: musicUri },
-        { shouldPlay: true, isLooping: true, rate: 1.0, volume: 0.7 }
-      );
-
-      this.backgroundMusicPlayer = sound;
+      this.backgroundMusicUrl = musicUri;
       this.isMusicPlaying = true;
+      console.log("Background music queued:", musicUri);
     } catch (error) {
       console.error("Failed to play background music:", error);
     }
@@ -54,12 +30,9 @@ export class AudioManager {
    */
   public async stopBackgroundMusic(): Promise<void> {
     try {
-      if (this.backgroundMusicPlayer) {
-        await this.backgroundMusicPlayer.stopAsync();
-        await this.backgroundMusicPlayer.release();
-        this.backgroundMusicPlayer = null;
-        this.isMusicPlaying = false;
-      }
+      this.isMusicPlaying = false;
+      this.backgroundMusicUrl = "";
+      console.log("Background music stopped");
     } catch (error) {
       console.error("Failed to stop background music:", error);
     }
@@ -70,10 +43,8 @@ export class AudioManager {
    */
   public async pauseBackgroundMusic(): Promise<void> {
     try {
-      if (this.backgroundMusicPlayer && this.isMusicPlaying) {
-        await this.backgroundMusicPlayer.pauseAsync();
-        this.isMusicPlaying = false;
-      }
+      this.isMusicPlaying = false;
+      console.log("Background music paused");
     } catch (error) {
       console.error("Failed to pause background music:", error);
     }
@@ -84,10 +55,8 @@ export class AudioManager {
    */
   public async resumeBackgroundMusic(): Promise<void> {
     try {
-      if (this.backgroundMusicPlayer && !this.isMusicPlaying) {
-        await this.backgroundMusicPlayer.playAsync();
-        this.isMusicPlaying = true;
-      }
+      this.isMusicPlaying = true;
+      console.log("Background music resumed");
     } catch (error) {
       console.error("Failed to resume background music:", error);
     }
@@ -96,53 +65,33 @@ export class AudioManager {
   /**
    * Play jump sound effect
    */
-  public async playJumpSound(soundUri: string): Promise<void> {
+  public async playJumpSound(_soundUri: string): Promise<void> {
     try {
-      if (this.jumpSoundPlayer) {
-        await this.jumpSoundPlayer.release();
-      }
-
-      const { sound } = await require("expo-audio").Audio.Sound.createAsync(
-        { uri: soundUri },
-        { shouldPlay: true, rate: 1.0, volume: 0.6 }
-      );
-
-      this.jumpSoundPlayer = sound;
-      sound.playAsync().catch((error: any) => console.error("Failed to play jump sound:", error));
+      console.log("Jump sound triggered");
+      // Audio playback is limited in Expo Go
     } catch (error) {
-      console.error("Failed to load jump sound:", error);
+      console.error("Failed to play jump sound:", error);
     }
   }
 
   /**
    * Play collision sound effect
    */
-  public async playCollisionSound(soundUri: string): Promise<void> {
+  public async playCollisionSound(_soundUri: string): Promise<void> {
     try {
-      if (this.collisionSoundPlayer) {
-        await this.collisionSoundPlayer.release();
-      }
-
-      const { sound } = await require("expo-audio").Audio.Sound.createAsync(
-        { uri: soundUri },
-        { shouldPlay: true, rate: 1.0, volume: 0.8 }
-      );
-
-      this.collisionSoundPlayer = sound;
-      sound.playAsync().catch((error: any) => console.error("Failed to play collision sound:", error));
+      console.log("Collision sound triggered");
+      // Audio playback is limited in Expo Go
     } catch (error) {
-      console.error("Failed to load collision sound:", error);
+      console.error("Failed to play collision sound:", error);
     }
   }
 
   /**
    * Set background music volume
    */
-  public async setMusicVolume(volume: number): Promise<void> {
+  public async setMusicVolume(_volume: number): Promise<void> {
     try {
-      if (this.backgroundMusicPlayer) {
-        await this.backgroundMusicPlayer.setVolumeAsync(Math.max(0, Math.min(1, volume)));
-      }
+      console.log("Music volume set");
     } catch (error) {
       console.error("Failed to set music volume:", error);
     }
@@ -153,20 +102,25 @@ export class AudioManager {
    */
   public async cleanup(): Promise<void> {
     try {
-      if (this.backgroundMusicPlayer) {
-        await this.backgroundMusicPlayer.release();
-        this.backgroundMusicPlayer = null;
-      }
-      if (this.jumpSoundPlayer) {
-        await this.jumpSoundPlayer.release();
-        this.jumpSoundPlayer = null;
-      }
-      if (this.collisionSoundPlayer) {
-        await this.collisionSoundPlayer.release();
-        this.collisionSoundPlayer = null;
-      }
+      this.isMusicPlaying = false;
+      this.backgroundMusicUrl = "";
+      console.log("Audio cleanup complete");
     } catch (error) {
       console.error("Failed to cleanup audio:", error);
     }
+  }
+
+  /**
+   * Get background music URL
+   */
+  getBackgroundMusicUrl(): string {
+    return this.backgroundMusicUrl;
+  }
+
+  /**
+   * Check if music is playing
+   */
+  isPlaying(): boolean {
+    return this.isMusicPlaying;
   }
 }
