@@ -36,10 +36,22 @@
 - [ ] Test on iOS and Android
 - [x] Verify high score persistence (AsyncStorage)
 
+## Daily Challenge Mode (COMPLETE)
+- [x] Create challenge system with multiple challenge types
+- [x] Implement daily rotation (24-hour cycle)
+- [x] Add Survival Challenge (survive 60 seconds)
+- [x] Add Speed Run Challenge (reach target speed)
+- [x] Add Collector Challenge (collect power-ups)
+- [x] Add Endurance Challenge (survive longest)
+- [x] Create challenge leaderboard UI
+- [x] Implement challenge progress tracking
+- [x] Add challenge completion rewards
+- [x] Create challenge screen with objectives
+- [x] Integrate challenges into main game flow
+- [x] Test all challenge modes
+
 ## Future Enhancements (Post-MVP)
-- [ ] Leaderboard system
 - [ ] Character skins/customization
-- [ ] Daily challenges
 - [ ] Power-ups (shield, speed boost, etc.)
 - [ ] Difficulty levels (Easy/Medium/Hard)
 - [ ] Settings screen (volume, difficulty)

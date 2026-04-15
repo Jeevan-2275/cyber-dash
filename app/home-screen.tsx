@@ -8,9 +8,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface HomeScreenProps {
   onPlay: () => void;
+  onChallenges: () => void;
 }
 
-export function HomeScreen({ onPlay }: HomeScreenProps) {
+export function HomeScreen({ onPlay, onChallenges }: HomeScreenProps) {
   const colors = useColors();
   const [highScore, setHighScore] = useState(0);
 
@@ -47,6 +48,11 @@ export function HomeScreen({ onPlay }: HomeScreenProps) {
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onPlay();
+  };
+
+  const handleChallenges = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onChallenges();
   };
 
   return (
@@ -156,8 +162,35 @@ export function HomeScreen({ onPlay }: HomeScreenProps) {
           </Pressable>
         </Animated.View>
 
+        {/* Daily Challenges Button */}
+        <Pressable
+          onPress={handleChallenges}
+          style={({ pressed }) => ({
+            paddingVertical: 14,
+            paddingHorizontal: 40,
+            backgroundColor: "transparent",
+            borderWidth: 2,
+            borderColor: "#FF006E",
+            borderRadius: 12,
+            alignItems: "center",
+            opacity: pressed ? 0.7 : 1,
+            transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }],
+          })}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "bold",
+              color: "#FF006E",
+              letterSpacing: 1,
+            }}
+          >
+            DAILY CHALLENGES
+          </Text>
+        </Pressable>
+
         {/* Footer Text */}
-        <View className="items-center gap-2 mt-8">
+        <View className="items-center gap-2 mt-6">
           <Text
             style={{
               fontSize: 12,
