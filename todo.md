@@ -177,3 +177,73 @@
 - [ ] Store assets ready
 - [ ] Build configuration complete
 - [ ] Final QA passed
+
+
+## Level Mode Extension (NEW)
+
+### Level System Architecture
+- [ ] Create level data structures and definitions
+- [ ] Implement level progression system
+- [ ] Create obstacle pattern templates
+- [ ] Design 10+ levels with varying difficulty
+
+### Game Mode Selection
+- [ ] Create mode selection screen (Infinite vs Level)
+- [ ] Implement mode routing and navigation
+- [ ] Add mode selection persistence
+
+### Level Selection UI
+- [ ] Create level selection screen
+- [ ] Show completed levels with stars
+- [ ] Display best scores per level
+- [ ] Show locked/unlocked status
+- [ ] Add level difficulty indicators
+
+### Level Game Engine
+- [ ] Extend game engine for level-specific rules
+- [ ] Implement obstacle patterns (not just random)
+- [ ] Add level completion conditions
+- [ ] Implement checkpoints for longer levels
+- [ ] Add boss sections for certain levels
+
+### Power-ups System
+- [ ] Implement Shield power-up (1 hit protection)
+- [ ] Implement Slow Motion power-up (temporary speed reduction)
+- [ ] Implement Coin Magnet power-up (auto-collect coins)
+- [ ] Add power-up spawning logic
+- [ ] Create power-up visual indicators
+
+### Themed Environments
+- [ ] Neon City theme (default)
+- [ ] Dark Tunnel theme
+- [ ] Cyber Grid theme
+- [ ] Add theme-specific colors and obstacles
+- [ ] Add background variations
+
+### Rewards System
+- [ ] Award coins on level completion
+- [ ] Bonus for no collisions
+- [ ] Bonus for high score
+- [ ] Star rating system (1-3 stars)
+- [ ] Track level rewards in progression manager
+
+### Level Progression
+- [ ] Save completed levels
+- [ ] Unlock next level on completion
+- [ ] Store best score per level
+- [ ] Store best combo per level
+- [ ] Calculate total progress
+
+### UI Updates
+- [ ] Update home screen with mode selection
+- [ ] Create level selection screen
+- [ ] Create level complete screen
+- [ ] Add progress indicators
+- [ ] Add level difficulty badges
+
+### Testing & Optimization
+- [ ] Test all 10+ levels for bugs
+- [ ] Verify no performance degradation
+- [ ] Test power-up interactions
+- [ ] Test level progression
+- [ ] Profile memory usage with level mode
