@@ -191,7 +191,19 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
         </View>
 
         {/* Game Area */}
-        <View className="flex-1 bg-black relative overflow-hidden">
+        <View
+          className="flex-1 bg-black relative overflow-hidden"
+          style={{
+            transform: [
+              {
+                translateX: gameEngineRef.current?.getAnimationEffects().getScreenShakeOffset().x || 0,
+              },
+              {
+                translateY: gameEngineRef.current?.getAnimationEffects().getScreenShakeOffset().y || 0,
+              },
+            ],
+          }}
+        >
           {/* Grid Background */}
           <View
             className="absolute inset-0"

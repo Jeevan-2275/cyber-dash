@@ -3,6 +3,8 @@
  * Core game loop, physics, obstacles, and collision detection
  */
 
+import { AnimationEffects, EFFECT_PRESETS } from "./animation-effects";
+
 export type GameState = "idle" | "playing" | "gameOver";
 
 export interface PlayerState {
@@ -48,6 +50,7 @@ export class GameEngine {
   private gameLoopId: number | null = null;
   private lastFrameTime: number = 0;
   private deltaTime: number = 0;
+  private animationEffects: AnimationEffects = new AnimationEffects();
 
   // Game constants
   private readonly GRAVITY = 0.6;
@@ -259,6 +262,13 @@ export class GameEngine {
   }
 
   /**
+   * Get animation effects
+   */
+  public getAnimationEffects(): AnimationEffects {
+    return this.animationEffects;
+  }
+
+  /**
    * Private: Start the game loop
    */
   private startGameLoop(): void {
@@ -317,6 +327,9 @@ export class GameEngine {
 
     // Update score
     this.updateScore();
+
+    // Update animation effects
+    this.animationEffects.update(deltaTime * 1000);
   }
 
   /**
@@ -487,6 +500,7 @@ export class GameEngine {
         }
 
         // Collision detected
+        this.animationEffects.triggerScreenShake(EFFECT_PRESETS.COLLISION_MEDIUM);
         this.end();
         if (this.onCollision) {
           this.onCollision();
