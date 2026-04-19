@@ -99,6 +99,9 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
 
   const player = gameEngineRef.current?.getPlayer();
   const obstacles = gameEngineRef.current?.getObstacles() || [];
+  const coins = gameEngineRef.current?.getCoins() || [];
+  const powerUps = gameEngineRef.current?.getPowerUps() || [];
+  const activePowerUps = gameEngineRef.current?.getActivePowerUps() || [];
 
   return (
     <Pressable
@@ -133,6 +136,24 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
               }}
             >
               {gameState.score}
+            </Text>
+          </View>
+
+          {/* Coins */}
+          <View className="items-center">
+            <Text style={{ fontSize: 12, color: "#FFFF00" }}>COINS</Text>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                color: "#FFFF00",
+                marginTop: 4,
+                textShadowColor: "#FFFF00",
+                textShadowOffset: { width: 0, height: 0 },
+                textShadowRadius: 4,
+              }}
+            >
+              {gameState.coinsCollected}
             </Text>
           </View>
 
@@ -343,6 +364,58 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
               </View>
             </View>
           )}
+
+          {/* Coins */}
+          {coins.map((coin) => (
+            <View
+              key={coin.id}
+              style={{
+                position: "absolute",
+                left: coin.x,
+                top: coin.y,
+                width: coin.width,
+                height: coin.height,
+                backgroundColor: "#FFFF00",
+                borderRadius: coin.width / 2,
+                shadowColor: "#FFFF00",
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.8,
+                shadowRadius: 6,
+                elevation: 6,
+              }}
+            />
+          ))}
+
+          {/* Power-Ups */}
+          {powerUps.map((powerUp) => (
+            <View
+              key={powerUp.id}
+              style={{
+                position: "absolute",
+                left: powerUp.x,
+                top: powerUp.y,
+                width: powerUp.width,
+                height: powerUp.height,
+                backgroundColor:
+                  powerUp.type === "shield"
+                    ? "#00FF00"
+                    : powerUp.type === "coinMagnet"
+                      ? "#FFFF00"
+                      : "#FF00FF",
+                borderRadius: 4,
+                shadowColor:
+                  powerUp.type === "shield"
+                    ? "#00FF00"
+                    : powerUp.type === "coinMagnet"
+                      ? "#FFFF00"
+                      : "#FF00FF",
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.8,
+                shadowRadius: 8,
+                elevation: 8,
+              }}
+            />
+          ))}
 
           {/* Obstacles */}
           {obstacles.map((obstacle) => (

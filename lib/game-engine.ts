@@ -4,6 +4,8 @@
  */
 
 import { AnimationEffects, EFFECT_PRESETS } from "./animation-effects";
+import { PowerUpSystem, PowerUpType } from "./power-up-system";
+import { CoinSystem } from "./coin-system";
 
 export type GameState = "idle" | "playing" | "gameOver";
 
@@ -51,6 +53,10 @@ export class GameEngine {
   private lastFrameTime: number = 0;
   private deltaTime: number = 0;
   private animationEffects: AnimationEffects = new AnimationEffects();
+  private powerUpSystem: PowerUpSystem = new PowerUpSystem();
+  private coinSystem: CoinSystem = new CoinSystem();
+  private lastCoinSpawnTime: number = 0;
+  private coinSpawnInterval: number = 2500; // ms between coin spawns
 
   // Game constants
   private readonly GRAVITY = 0.6;
@@ -72,6 +78,8 @@ export class GameEngine {
   private onScoreIncrease: ((score: number) => void) | null = null;
 
   constructor(highScore: number = 0, totalCoins: number = 0) {
+    this.powerUpSystem = new PowerUpSystem();
+    this.coinSystem = new CoinSystem();
     this.state = {
       state: "idle",
       score: 0,
@@ -97,6 +105,7 @@ export class GameEngine {
       isPaused: false,
       countdownTime: 3000,
     };
+    this.lastCoinSpawnTime = Date.now();
   }
 
   /**
@@ -330,6 +339,21 @@ export class GameEngine {
 
     // Update animation effects
     this.animationEffects.update(deltaTime * 1000);
+
+    // Update power-ups
+    this.powerUpSystem.update(deltaTime * 1000);
+
+    // Spawn coins
+    this.spawnCoins();
+
+    // Update coins
+    this.coinSystem.removeOffScreenCoins(this.screenWidth);
+
+    // Check coin collisions
+    this.checkCoinCollisions();
+
+    // Check power-up collisions
+    this.checkPowerUpCollisions();
   }
 
   /**
@@ -560,6 +584,80 @@ export class GameEngine {
         this.onScoreIncrease(this.state.score);
       }
     }
+  }
+
+  /**
+   * Private: Spawn coins
+   */
+  private spawnCoins(): void {
+    const now = Date.now();
+    if (now - this.lastCoinSpawnTime > this.coinSpawnInterval) {
+      const randomX = Math.random() * (this.screenWidth - 40) + 20;
+      const randomY = Math.random() * (this.screenHeight * 0.5) + 100;
+      this.coinSystem.spawnCoin(randomX, randomY);
+      this.lastCoinSpawnTime = now;
+    }
+  }
+
+  /**
+   * Private: Check coin collisions
+   */
+  private checkCoinCollisions(): void {
+    const coins = this.coinSystem.getCoins();
+    const player = this.state.player;
+
+    for (const coin of coins) {
+      if (
+        player.x < coin.x + coin.width &&
+        player.x + player.width > coin.x &&
+        player.y < coin.y + coin.height &&
+        player.y + player.height > coin.y
+      ) {
+        this.coinSystem.collectCoin(coin.id);
+        this.state.coinsCollected++;
+        this.state.totalCoins++;
+      }
+    }
+  }
+
+  /**
+   * Private: Check power-up collisions
+   */
+  private checkPowerUpCollisions(): void {
+    const powerUps = this.powerUpSystem.getPowerUps();
+    const player = this.state.player;
+
+    for (const powerUp of powerUps) {
+      if (
+        player.x < powerUp.x + powerUp.width &&
+        player.x + player.width > powerUp.x &&
+        player.y < powerUp.y + powerUp.height &&
+        player.y + player.height > powerUp.y
+      ) {
+        this.powerUpSystem.collectPowerUp(powerUp.id);
+      }
+    }
+  }
+
+  /**
+   * Get coins
+   */
+  public getCoins() {
+    return this.coinSystem.getCoins();
+  }
+
+  /**
+   * Get power-ups
+   */
+  public getPowerUps() {
+    return this.powerUpSystem.getPowerUps();
+  }
+
+  /**
+   * Get active power-ups
+   */
+  public getActivePowerUps() {
+    return this.powerUpSystem.getActivePowerUps();
   }
 
   /**
