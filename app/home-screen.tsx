@@ -8,10 +8,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface HomeScreenProps {
   onPlay: () => void;
-  onLevelMode: () => void;
 }
 
-export function HomeScreen({ onPlay, onLevelMode }: HomeScreenProps) {
+export function HomeScreen({ onPlay }: HomeScreenProps) {
   const colors = useColors();
   const [highScore, setHighScore] = useState(0);
 
@@ -48,11 +47,6 @@ export function HomeScreen({ onPlay, onLevelMode }: HomeScreenProps) {
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onPlay();
-  };
-
-  const handleLevelMode = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    onLevelMode();
   };
 
   return (
@@ -130,72 +124,37 @@ export function HomeScreen({ onPlay, onLevelMode }: HomeScreenProps) {
         {/* Spacer */}
         <View className="flex-1" />
 
-        {/* Mode Buttons */}
-        <View className="w-full gap-4 px-6">
-          {/* Infinite Mode Button */}
-          <Animated.View style={glowStyle}>
-            <Pressable
-              onPress={handlePlay}
-              style={({ pressed }) => ({
-                paddingVertical: 16,
-                paddingHorizontal: 24,
-                backgroundColor: "#00D9FF",
-                borderRadius: 12,
-                alignItems: "center",
-                opacity: pressed ? 0.8 : 1,
-                transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }],
-                shadowColor: "#00D9FF",
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.8,
-                shadowRadius: 16,
-                elevation: 6,
-              })}
-            >
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "bold",
-                  color: "#0A0E27",
-                  letterSpacing: 2,
-                }}
-              >
-                ∞ INFINITE MODE
-              </Text>
-            </Pressable>
-          </Animated.View>
-
-          {/* Level Mode Button */}
+        {/* Play Button */}
+        <Animated.View style={glowStyle}>
           <Pressable
-            onPress={handleLevelMode}
+            onPress={handlePlay}
             style={({ pressed }) => ({
-              paddingVertical: 16,
-              paddingHorizontal: 24,
-              backgroundColor: "transparent",
-              borderRadius: 12,
-              borderWidth: 2,
-              borderColor: "#FF006E",
+              paddingVertical: 18,
+              paddingHorizontal: 60,
+              backgroundColor: "#00D9FF",
+              borderRadius: 16,
               alignItems: "center",
               opacity: pressed ? 0.8 : 1,
               transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }],
-              shadowColor: "#FF006E",
+              shadowColor: "#00D9FF",
               shadowOffset: { width: 0, height: 0 },
-              shadowOpacity: 0.6,
-              shadowRadius: 12,
-              elevation: 4,
+              shadowOpacity: 0.8,
+              shadowRadius: 20,
+              elevation: 8,
             })}
           >
             <Text
               style={{
-                fontSize: 18,
+                fontSize: 24,
                 fontWeight: "bold",
-                color: "#FF006E",
+                color: "#0A0E27",
                 letterSpacing: 2,
               }}
             >
-              ◆ LEVEL MODE
+              PLAY
             </Text>
           </Pressable>
-        </View>
+        </Animated.View>
 
         {/* Footer Text */}
         <View className="items-center gap-2 mt-6">

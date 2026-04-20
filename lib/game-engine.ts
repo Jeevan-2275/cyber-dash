@@ -291,7 +291,12 @@ export class GameEngine {
         this.emitStateChange();
       }
 
-      this.gameLoopId = requestAnimationFrame(loop);
+      // Only schedule next frame if game is still running
+      if (this.state.state !== "gameOver") {
+        this.gameLoopId = requestAnimationFrame(loop);
+      } else {
+        this.gameLoopId = null;
+      }
     };
 
     this.gameLoopId = requestAnimationFrame(loop);

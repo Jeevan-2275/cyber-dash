@@ -61,7 +61,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }),
     [colorScheme, setColorScheme],
   );
-  console.log(value, themeVariables)
+  // Debug log removed - was causing excessive console noise
 
   return (
     <ThemeContext.Provider value={value}>
