@@ -19,6 +19,7 @@ export default function CyberDashApp() {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>("home");
   const [gameOverData, setGameOverData] = useState({ finalScore: 0, highScore: 0 });
   const [levelGameOverData, setLevelGameOverData] = useState<LevelGameOverData>({ levelId: 0, score: 0, stars: 0 });
+  const [selectedLevelId, setSelectedLevelId] = useState(1);
   const [progressionManager] = useState(() => new LevelProgressionManager());
 
   // Initialize progression manager on mount
@@ -50,6 +51,7 @@ export default function CyberDashApp() {
   };
 
   const handleSelectLevel = (levelId: number) => {
+    setSelectedLevelId(levelId);
     setCurrentScreen("levelGame");
   };
 
@@ -60,6 +62,7 @@ export default function CyberDashApp() {
 
   const handleNextLevel = (levelId: number) => {
     if (levelId < 10) {
+      setSelectedLevelId(levelId + 1);
       setCurrentScreen("levelGame");
     } else {
       // All levels completed
@@ -68,6 +71,7 @@ export default function CyberDashApp() {
   };
 
   const handleRetryLevel = (levelId: number) => {
+    setSelectedLevelId(levelId);
     setCurrentScreen("levelGame");
   };
 
@@ -96,7 +100,7 @@ export default function CyberDashApp() {
       )}
       {currentScreen === "levelGame" && (
         <LevelGameScreen
-          levelId={levelGameOverData.levelId || 1}
+          levelId={selectedLevelId}
           onGameOver={handleLevelGameOver}
           onBack={handleBackToLevelSelect}
         />
