@@ -11,7 +11,7 @@ import { getThemeColors } from "@/lib/level-system";
 
 interface LevelGameScreenProps {
   levelId: number;
-  onGameOver: (levelId: number, score: number, stars: number) => void;
+  onGameOver: (levelId: number, score: number, stars: number, isCompleted: boolean) => void;
   onBack: () => void;
 }
 
@@ -39,14 +39,14 @@ export function LevelGameScreen({
         // Check if level is complete
         if (gameEngine.isLevelComplete() && state.state === "playing") {
           const rewards = gameEngine.calculateRewards();
-          endLevel(state.score, rewards.stars);
+          endLevel(state.score, rewards.stars, true);
           return;
         }
 
-        // Check if game over
+        // Check if game over (collision)
         if (state.state === "gameOver") {
           const rewards = gameEngine.calculateRewards();
-          endLevel(state.score, rewards.stars);
+          endLevel(state.score, rewards.stars, false);
           return;
         }
       }
@@ -64,12 +64,12 @@ export function LevelGameScreen({
     };
   }, [gameEngine, isPaused]);
 
-  const endLevel = (score: number, stars: number) => {
+  const endLevel = (score: number, stars: number, isCompleted: boolean) => {
     if (gameLoopRef.current) {
       cancelAnimationFrame(gameLoopRef.current);
     }
     gameEngine.cleanup();
-    onGameOver(levelId, score, stars);
+    onGameOver(levelId, score, stars, isCompleted);
   };
 
   const handlePause = () => {

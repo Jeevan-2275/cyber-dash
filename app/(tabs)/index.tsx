@@ -5,9 +5,10 @@ import { GameOverScreen } from "../game-over-screen";
 import { LevelSelectScreen } from "../level-select-screen";
 import { LevelGameScreen } from "../level-game-screen";
 import { LevelCompleteScreen } from "../level-complete-screen";
+import { LevelGameOverScreen } from "../level-game-over-screen";
 import { LevelProgressionManager } from "@/lib/level-progression";
 
-type AppScreen = "home" | "game" | "gameOver" | "levelSelect" | "levelGame" | "levelComplete";
+type AppScreen = "home" | "game" | "gameOver" | "levelSelect" | "levelGame" | "levelComplete" | "levelGameOver";
 
 interface LevelGameOverData {
   levelId: number;
@@ -55,9 +56,15 @@ export default function CyberDashApp() {
     setCurrentScreen("levelGame");
   };
 
-  const handleLevelGameOver = (levelId: number, score: number, stars: number) => {
+  const handleLevelGameOver = (levelId: number, score: number, stars: number, isCompleted: boolean) => {
     setLevelGameOverData({ levelId, score, stars });
-    setCurrentScreen("levelComplete");
+    if (isCompleted) {
+      // Level successfully completed - show rewards and unlock next level
+      setCurrentScreen("levelComplete");
+    } else {
+      // Game over (collision) - show retry screen
+      setCurrentScreen("levelGameOver");
+    }
   };
 
   const handleNextLevel = (levelId: number) => {
@@ -76,6 +83,15 @@ export default function CyberDashApp() {
   };
 
   const handleBackToLevelSelect = () => {
+    setCurrentScreen("levelSelect");
+  };
+
+  const handleLevelGameOverRetry = (levelId: number) => {
+    setSelectedLevelId(levelId);
+    setCurrentScreen("levelGame");
+  };
+
+  const handleLevelGameOverBack = () => {
     setCurrentScreen("levelSelect");
   };
 
@@ -114,6 +130,14 @@ export default function CyberDashApp() {
           onRetry={handleRetryLevel}
           onBack={handleBackToLevelSelect}
           progressionManager={progressionManager}
+        />
+      )}
+      {currentScreen === "levelGameOver" && (
+        <LevelGameOverScreen
+          levelId={levelGameOverData.levelId}
+          score={levelGameOverData.score}
+          onRetry={handleLevelGameOverRetry}
+          onBack={handleLevelGameOverBack}
         />
       )}
     </>
