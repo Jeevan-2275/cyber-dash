@@ -44,7 +44,7 @@ const config: ExpoConfig = {
   version: "1.0.0",
   description: "A high-energy neon-themed infinite runner game with dynamic obstacles and synthwave soundtrack.",
   orientation: "portrait",
-  icon: "./assets/images/icon.webp",
+  icon: "./assets/images/icon.png",
   primaryColor: "#00D9FF",
   scheme: env.scheme,
   userInterfaceStyle: "automatic",
@@ -60,7 +60,7 @@ const config: ExpoConfig = {
   android: {
     adaptiveIcon: {
       backgroundColor: "#0A0E27",
-      foregroundImage: "./assets/images/android-icon-foreground.webp",
+      foregroundImage: "./assets/images/android-icon-foreground.png",
       backgroundImage: "./assets/images/android-icon-background.png",
       monochromeImage: "./assets/images/android-icon-monochrome.png",
     },
@@ -85,7 +85,7 @@ const config: ExpoConfig = {
   web: {
     bundler: "metro",
     output: "static",
-    favicon: "./assets/images/favicon.webp",
+    favicon: "./assets/images/favicon.png",
     backgroundColor: "#0A0E27",
   },
   plugins: [
@@ -106,7 +106,7 @@ const config: ExpoConfig = {
     [
       "expo-splash-screen",
       {
-        image: "./assets/images/splash-icon.webp",
+        image: "./assets/images/splash-icon.png",
         imageWidth: 200,
         resizeMode: "contain",
         backgroundColor: "#0A0E27",
