@@ -2,17 +2,30 @@ import React, { useState } from "react";
 import { HomeScreen } from "../home-screen";
 import { GameScreen } from "../game-screen";
 import { GameOverScreen } from "../game-over-screen";
-import { LevelSelectScreen } from "../level-select-screen";
-import { LevelGameScreen } from "../level-game-screen";
-import { LevelCompleteScreen } from "../level-complete-screen";
+import { SimpleLevelSelect } from "../simple-level-select";
+import { SimpleLevelGame } from "../simple-level-game";
+import { SimpleLevelGameOver } from "../simple-level-gameover";
+import { SimpleLevel, SIMPLE_LEVELS } from "@/lib/simple-levels";
+import { SimpleLevelProgress } from "@/lib/simple-level-progress";
 
-type AppScreen = "home" | "game" | "gameOver" | "levelSelect" | "levelGame" | "levelComplete";
+type AppScreen = "home" | "game" | "gameOver" | "levelSelect" | "levelGame" | "levelGameOver";
+
+interface LevelGameOverData {
+  level: SimpleLevel;
+  score: number;
+  completed: boolean;
+}
 
 export default function CyberDashApp() {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>("home");
   const [gameOverData, setGameOverData] = useState({ finalScore: 0, highScore: 0 });
-  const [selectedLevelId, setSelectedLevelId] = useState(1);
-  const [levelCompleteData, setLevelCompleteData] = useState({ levelId: 1, score: 0, stars: 0 });
+  const [selectedLevel, setSelectedLevel] = useState<SimpleLevel>(SIMPLE_LEVELS[0]);
+  const [completedLevels, setCompletedLevels] = useState<number[]>([]);
+  const [levelGameOverData, setLevelGameOverData] = useState<LevelGameOverData>({
+    level: SIMPLE_LEVELS[0],
+    score: 0,
+    completed: false,
+  });
 
   const handlePlay = () => {
     setCurrentScreen("game");
@@ -35,28 +48,41 @@ export default function CyberDashApp() {
     setCurrentScreen("home");
   };
 
-  const handleSelectLevel = (levelId: number) => {
-    setSelectedLevelId(levelId);
+  const handleLevelSelect = (levelId: number) => {
+    const level = SIMPLE_LEVELS[levelId];
+    setSelectedLevel(level);
     setCurrentScreen("levelGame");
   };
 
-  const handleLevelGameOver = (levelId: number, score: number, stars: number) => {
-    setLevelCompleteData({ levelId, score, stars });
-    setCurrentScreen("levelComplete");
+  const handleLevelComplete = (levelId: number, score: number) => {
+    const level = SIMPLE_LEVELS[levelId];
+    const newCompletedLevels = [...completedLevels];
+    if (!newCompletedLevels.includes(levelId)) {
+      newCompletedLevels.push(levelId);
+      setCompletedLevels(newCompletedLevels);
+    }
+    setLevelGameOverData({ level, score, completed: true });
+    setCurrentScreen("levelGameOver");
   };
 
-  const handleNextLevel = () => {
-    const nextLevelId = selectedLevelId + 1;
-    if (nextLevelId <= 10) {
-      setSelectedLevelId(nextLevelId);
+  const handleLevelFailed = () => {
+    setLevelGameOverData({ level: selectedLevel, score: 0, completed: false });
+    setCurrentScreen("levelGameOver");
+  };
+
+  const handleLevelRetry = () => {
+    setCurrentScreen("levelGame");
+  };
+
+  const handleLevelNext = () => {
+    const nextLevelId = selectedLevel.id + 1;
+    if (nextLevelId < SIMPLE_LEVELS.length) {
+      const nextLevel = SIMPLE_LEVELS[nextLevelId];
+      setSelectedLevel(nextLevel);
       setCurrentScreen("levelGame");
     } else {
       setCurrentScreen("levelSelect");
     }
-  };
-
-  const handleRetryLevel = () => {
-    setCurrentScreen("levelGame");
   };
 
   return (
@@ -72,22 +98,26 @@ export default function CyberDashApp() {
         />
       )}
       {currentScreen === "levelSelect" && (
-        <LevelSelectScreen onSelectLevel={handleSelectLevel} onBack={handleHome} />
-      )}
-      {currentScreen === "levelGame" && (
-        <LevelGameScreen
-          levelId={selectedLevelId}
-          onGameOver={handleLevelGameOver}
+        <SimpleLevelSelect
+          completedLevels={completedLevels}
+          onSelectLevel={handleLevelSelect}
           onBack={handleHome}
         />
       )}
-      {currentScreen === "levelComplete" && (
-        <LevelCompleteScreen
-          levelId={levelCompleteData.levelId}
-          score={levelCompleteData.score}
-          stars={levelCompleteData.stars}
-          onNextLevel={handleNextLevel}
-          onRetry={handleRetryLevel}
+      {currentScreen === "levelGame" && (
+        <SimpleLevelGame
+          level={selectedLevel}
+          onLevelComplete={handleLevelComplete}
+          onLevelFailed={handleLevelFailed}
+        />
+      )}
+      {currentScreen === "levelGameOver" && (
+        <SimpleLevelGameOver
+          level={levelGameOverData.level}
+          score={levelGameOverData.score}
+          completed={levelGameOverData.completed}
+          onRetry={handleLevelRetry}
+          onNextLevel={handleLevelNext}
           onBack={handleHome}
         />
       )}

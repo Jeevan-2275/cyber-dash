@@ -50,6 +50,11 @@ export function HomeScreen({ onPlay, onLevelMode }: HomeScreenProps) {
     onPlay();
   };
 
+  const handleLevelMode = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    onLevelMode();
+  };
+
   return (
     <ScreenContainer className="bg-black items-center justify-center p-6" edges={["top", "left", "right", "bottom"]}>
       <View className="items-center gap-12 w-full">
@@ -126,14 +131,14 @@ export function HomeScreen({ onPlay, onLevelMode }: HomeScreenProps) {
         <View className="flex-1" />
 
         {/* Mode Buttons */}
-        <View className="w-full gap-3">
+        <View className="w-full gap-4 px-6">
           {/* Infinite Mode Button */}
           <Animated.View style={glowStyle}>
             <Pressable
               onPress={handlePlay}
               style={({ pressed }) => ({
                 paddingVertical: 16,
-                paddingHorizontal: 40,
+                paddingHorizontal: 24,
                 backgroundColor: "#00D9FF",
                 borderRadius: 12,
                 alignItems: "center",
@@ -142,16 +147,16 @@ export function HomeScreen({ onPlay, onLevelMode }: HomeScreenProps) {
                 shadowColor: "#00D9FF",
                 shadowOffset: { width: 0, height: 0 },
                 shadowOpacity: 0.8,
-                shadowRadius: 15,
-                elevation: 8,
+                shadowRadius: 16,
+                elevation: 6,
               })}
             >
               <Text
                 style={{
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: "bold",
                   color: "#0A0E27",
-                  letterSpacing: 1,
+                  letterSpacing: 2,
                 }}
               >
                 ∞ INFINITE MODE
@@ -161,25 +166,30 @@ export function HomeScreen({ onPlay, onLevelMode }: HomeScreenProps) {
 
           {/* Level Mode Button */}
           <Pressable
-            onPress={onLevelMode}
+            onPress={handleLevelMode}
             style={({ pressed }) => ({
               paddingVertical: 16,
-              paddingHorizontal: 40,
-              backgroundColor: "rgba(255, 0, 110, 0.2)",
+              paddingHorizontal: 24,
+              backgroundColor: "transparent",
               borderRadius: 12,
               borderWidth: 2,
               borderColor: "#FF006E",
               alignItems: "center",
               opacity: pressed ? 0.8 : 1,
               transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }],
+              shadowColor: "#FF006E",
+              shadowOffset: { width: 0, height: 0 },
+              shadowOpacity: 0.6,
+              shadowRadius: 12,
+              elevation: 4,
             })}
           >
             <Text
               style={{
-                fontSize: 16,
+                fontSize: 18,
                 fontWeight: "bold",
                 color: "#FF006E",
-                letterSpacing: 1,
+                letterSpacing: 2,
               }}
             >
               ◆ LEVEL MODE
