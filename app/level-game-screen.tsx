@@ -141,6 +141,22 @@ export function LevelGameScreen({
         </View>
 
         <View className="items-center">
+          <Text style={{ color: "#FFFF00", fontSize: 12 }}>Coins</Text>
+          <Text
+            style={{
+              color: "#FFFF00",
+              fontSize: 16,
+              fontWeight: "bold",
+              textShadowColor: "#FFFF00",
+              textShadowOffset: { width: 0, height: 0 },
+              textShadowRadius: 5,
+            }}
+          >
+            💰 {gameState.coinsCollectedThisLevel}
+          </Text>
+        </View>
+
+        <View className="items-center">
           <Text style={{ color: "#FFFF00", fontSize: 12 }}>Time</Text>
           <Text
             style={{
@@ -155,6 +171,24 @@ export function LevelGameScreen({
             {Math.ceil(gameState.levelTimeRemaining / 1000)}s
           </Text>
         </View>
+
+        {/* Power-ups Display */}
+        {gameState.shieldActive && (
+          <View
+            style={{
+              backgroundColor: "rgba(0, 255, 255, 0.2)",
+              paddingHorizontal: 8,
+              paddingVertical: 4,
+              borderRadius: 4,
+              borderWidth: 1,
+              borderColor: "#00FFFF",
+            }}
+          >
+            <Text style={{ color: "#00FFFF", fontSize: 10, fontWeight: "bold" }}>
+              🛡️ SHIELD
+            </Text>
+          </View>
+        )}
 
         <TouchableOpacity
           onPress={handlePause}

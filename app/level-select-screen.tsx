@@ -8,27 +8,44 @@ import { View, Text, TouchableOpacity, ScrollView, FlatList } from "react-native
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
 import { getAllLevels, LevelDefinition } from "@/lib/level-system";
-import { ProgressionManager } from "@/lib/progression-manager";
+import { LevelProgressionManager } from "@/lib/level-progression";
 
 interface LevelSelectScreenProps {
   onSelectLevel: (levelId: number) => void;
   onBack: () => void;
+  progressionManager?: LevelProgressionManager;
 }
 
 export function LevelSelectScreen({
   onSelectLevel,
   onBack,
+  progressionManager,
 }: LevelSelectScreenProps) {
   const colors = useColors();
   const [levels, setLevels] = useState<LevelDefinition[]>([]);
-  const [progressionManager] = useState(() => new ProgressionManager());
+  const [progress, setProgress] = useState<any>({});
+  const [manager] = useState(() => progressionManager || new LevelProgressionManager());
 
   useEffect(() => {
-    setLevels(getAllLevels());
-  }, []);
+    const loadData = async () => {
+      await manager.initialize();
+      setLevels(getAllLevels());
+      const allProgress = manager.getAllProgress();
+      const progressMap: any = {};
+      allProgress.forEach((p) => {
+        progressMap[p.levelId] = p;
+      });
+      setProgress(progressMap);
+    };
+    loadData();
+  }, [manager]);
 
   const renderLevelCard = ({ item: level }: { item: LevelDefinition }) => {
-    const isLocked = level.id > 1; // Only first level is unlocked initially
+    const levelProgress = progress[level.id];
+    const isLocked = !manager.isLevelUnlocked(level.id);
+    const isCompleted = levelProgress?.completed || false;
+    const stars = levelProgress?.stars || 0;
+
     const difficultyColor =
       level.difficulty <= 2
         ? "#00FF88"
@@ -46,11 +63,13 @@ export function LevelSelectScreen({
         style={{
           marginBottom: 12,
           borderRadius: 12,
-          borderWidth: 1,
-          borderColor: isLocked ? "#333333" : "#00FFFF",
+          borderWidth: 2,
+          borderColor: isLocked ? "#333333" : isCompleted ? "#00FF88" : "#00FFFF",
           backgroundColor: isLocked
             ? "rgba(50, 50, 50, 0.5)"
-            : "rgba(0, 255, 255, 0.05)",
+            : isCompleted
+              ? "rgba(0, 255, 136, 0.05)"
+              : "rgba(0, 255, 255, 0.05)",
           padding: 16,
           opacity: isLocked ? 0.5 : 1,
         }}
@@ -60,7 +79,7 @@ export function LevelSelectScreen({
             <Text
               className="text-lg font-bold"
               style={{
-                color: isLocked ? "#666666" : "#00FFFF",
+                color: isLocked ? "#666666" : isCompleted ? "#00FF88" : "#00FFFF",
               }}
             >
               Level {level.id}
@@ -95,16 +114,13 @@ export function LevelSelectScreen({
             </Text>
           </View>
 
-          {/* Lock Icon */}
-          {isLocked && (
-            <Text
-              className="text-xl"
-              style={{
-                color: "#666666",
-              }}
-            >
-              🔒
-            </Text>
+          {/* Status Icon */}
+          {isLocked ? (
+            <Text className="text-xl">🔒</Text>
+          ) : isCompleted ? (
+            <Text className="text-xl">✅</Text>
+          ) : (
+            <Text className="text-xl">▶</Text>
           )}
         </View>
 
@@ -135,7 +151,7 @@ export function LevelSelectScreen({
               </Text>
             </View>
 
-            {/* Duration/Distance */}
+            {/* Duration */}
             <View
               style={{
                 backgroundColor: "rgba(0, 255, 255, 0.1)",
@@ -152,9 +168,9 @@ export function LevelSelectScreen({
 
           {/* Stars */}
           <View className="flex-row gap-1">
-            <Text className="text-sm">⭐</Text>
-            <Text className="text-sm">⭐</Text>
-            <Text className="text-sm">⭐</Text>
+            <Text className="text-sm">{stars >= 1 ? "⭐" : "☆"}</Text>
+            <Text className="text-sm">{stars >= 2 ? "⭐" : "☆"}</Text>
+            <Text className="text-sm">{stars >= 3 ? "⭐" : "☆"}</Text>
           </View>
         </View>
       </TouchableOpacity>
