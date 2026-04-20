@@ -38,16 +38,16 @@ export function LevelCompleteScreen({
   useEffect(() => {
     // Save level progress
     const saveProgress = async () => {
-      await manager.initialize();
       const baseCoins = level.baseCoins;
       const noCrashBonus = score >= baseCoins ? level.noCrashBonus : 0;
       const highScoreBonus = score >= baseCoins * 1.5 ? level.highScoreBonus : 0;
       const totalCoins = baseCoins + noCrashBonus + highScoreBonus;
       
+      // Manager is already initialized in main app, just save the completion
       await manager.completeLevel(levelId, score, stars, totalCoins, score >= baseCoins);
     };
 
-    saveProgress();
+    saveProgress().catch(console.error);
 
     // Animate stars
     const timer = setTimeout(() => setAnimatedStars(stars), 300);

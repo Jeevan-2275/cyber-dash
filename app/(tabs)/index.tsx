@@ -52,6 +52,11 @@ export default function CyberDashApp() {
   };
 
   const handleSelectLevel = (levelId: number) => {
+    // Validate that level is unlocked (prevent cheating)
+    if (!progressionManager.isLevelUnlocked(levelId)) {
+      console.warn(`[Security] Attempted to select locked level ${levelId}`);
+      return; // Silently ignore attempt to select locked level
+    }
     setSelectedLevelId(levelId);
     setCurrentScreen("levelGame");
   };

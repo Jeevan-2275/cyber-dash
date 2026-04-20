@@ -27,6 +27,8 @@ export class LevelGameEngine {
   private slowMotion: SlowMotionPowerUp;
   private coinMagnet: CoinMagnetPowerUp;
   private levelStartTime: number = 0;
+  private pausedTime: number = 0; // Time when game was paused
+  private totalPausedDuration: number = 0; // Total time spent paused
   private coinsCollected: number = 0;
   private noCrashAchieved: boolean = true;
   private onLevelStateChangeCallback: ((state: LevelGameState) => void) | null = null;
@@ -102,6 +104,7 @@ export class LevelGameEngine {
    * Pause level
    */
   public pause(): void {
+    this.pausedTime = Date.now();
     this.baseEngine.pause();
   }
 
@@ -109,6 +112,12 @@ export class LevelGameEngine {
    * Resume level
    */
   public resume(): void {
+    if (this.pausedTime > 0) {
+      // Add the pause duration to total paused time
+      const pauseDuration = Date.now() - this.pausedTime;
+      this.totalPausedDuration += pauseDuration;
+      this.pausedTime = 0;
+    }
     this.baseEngine.resumeGame();
   }
 
@@ -165,8 +174,8 @@ export class LevelGameEngine {
    */
   public isLevelComplete(): boolean {
     if (this.level.duration > 0) {
-      // Time-based level
-      const elapsed = Date.now() - this.levelStartTime;
+      // Time-based level (excluding paused time)
+      const elapsed = Date.now() - this.levelStartTime - this.totalPausedDuration;
       return elapsed >= this.level.duration;
     }
 
@@ -179,7 +188,7 @@ export class LevelGameEngine {
    */
   public getLevelProgress(): number {
     if (this.level.duration > 0) {
-      const elapsed = Date.now() - this.levelStartTime;
+      const elapsed = Date.now() - this.levelStartTime - this.totalPausedDuration;
       return Math.min(100, (elapsed / this.level.duration) * 100);
     }
     return 0;
@@ -190,7 +199,7 @@ export class LevelGameEngine {
    */
   public getTimeRemaining(): number {
     if (this.level.duration > 0) {
-      const elapsed = Date.now() - this.levelStartTime;
+      const elapsed = Date.now() - this.levelStartTime - this.totalPausedDuration;
       return Math.max(0, this.level.duration - elapsed);
     }
     return 0;
