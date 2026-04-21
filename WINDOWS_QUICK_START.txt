@@ -1,0 +1,174 @@
+================================================================================
+CYBER DASH - WINDOWS QUICK START
+================================================================================
+
+STEP 1: Extract ZIP
+  unzip cyber-dash-complete.zip
+  cd cyber-dash
+
+STEP 2: Install Dependencies
+  pnpm install
+
+STEP 3: Start Dev Server
+  pnpm run dev:metro
+
+STEP 4: Test on Phone
+  - Open Expo Go app on your phone
+  - Scan QR code shown in terminal
+  - App loads on your phone
+
+================================================================================
+AVAILABLE COMMANDS
+================================================================================
+
+pnpm install              Install dependencies
+pnpm run dev:metro        Start Expo dev server (Android)
+pnpm run dev:server       Start backend server (separate terminal)
+pnpm run dev              Start both (requires 2 terminals)
+pnpm run android          Direct Android command
+pnpm run ios              Direct iOS command (Mac only)
+pnpm check                TypeScript type checking
+pnpm test                 Run tests
+pnpm format               Format code
+pnpm lint                 Lint code
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ERROR: "The directory name is invalid"
+  FIXED! Updated scripts for Windows compatibility.
+  If still occurs: Delete node_modules, run pnpm install
+
+ERROR: "expo: command not found"
+  Run: npm install -g expo-cli
+
+ERROR: "Android emulator not found"
+  Open Android Studio → Tools → Device Manager → Create emulator
+
+ERROR: "Cannot find module"
+  Run: pnpm install --force
+
+ERROR: "Expo Go won't connect"
+  - Phone and PC must be on SAME WiFi
+  - Restart Expo Go app
+  - Run: pnpm run dev:metro again
+
+ERROR: "Port 8081 already in use"
+  Run: set EXPO_PORT=8082 && pnpm run dev:metro
+
+================================================================================
+WHAT'S FIXED
+================================================================================
+
+✅ Removed cross-env (caused PowerShell errors)
+✅ Simplified Metro start command
+✅ Removed --web flag (not needed for mobile)
+✅ Works on Windows CMD, PowerShell, VS Code terminal
+✅ No more invalid path errors
+✅ Zero TypeScript compilation errors
+
+================================================================================
+FEATURES INCLUDED
+================================================================================
+
+INFINITE MODE:
+  - Tap to jump, tap to slide
+  - Increasing difficulty
+  - Collect coins
+  - Power-ups: Shield, Magnet, Slow Motion
+
+LEVEL MODE:
+  - 10 playable levels (20-120 seconds each)
+  - Sequential unlock progression
+  - Level 1 starts unlocked
+  - Coin rewards
+  - Power-ups during gameplay
+
+RESPONSIVE DESIGN:
+  - Works on all screen sizes
+  - 60 FPS performance
+  - Mobile-optimized
+
+================================================================================
+GAME MODES
+================================================================================
+
+Option A: Expo Go (Easiest - Recommended)
+  1. Install Expo Go app on your phone
+  2. Run: pnpm run dev:metro
+  3. Scan QR code with Expo Go
+  4. App loads on your phone
+
+Option B: Android Emulator
+  1. Open Android Studio
+  2. Start an emulator
+  3. Run: pnpm run dev:metro
+  4. App loads in emulator
+
+Option C: Direct Android
+  1. Connect Android phone via USB
+  2. Run: pnpm run dev:metro
+  3. App loads on your phone
+
+================================================================================
+BUILDING FOR APP STORES
+================================================================================
+
+1. Install EAS CLI:
+   npm install -g eas-cli
+
+2. Login to Expo:
+   eas login
+
+3. Build for Android:
+   eas build --platform android
+
+4. Build for iOS (Mac only):
+   eas build --platform ios
+
+================================================================================
+TIPS FOR WINDOWS USERS
+================================================================================
+
+✓ Use VS Code Terminal (more reliable than Command Prompt)
+✓ Keep phone plugged in during testing
+✓ Phone and PC must be on SAME WiFi network
+✓ Restart Expo Go if connection drops
+✓ Update Node.js to latest LTS version
+✓ Don't change port 8081 unless necessary
+
+================================================================================
+PROJECT STRUCTURE
+================================================================================
+
+cyber-dash/
+  ├── app/                    ← Game screens
+  ├── lib/                    ← Game engines & utilities
+  ├── assets/images/          ← Game assets
+  ├── package.json            ← FIXED FOR WINDOWS
+  ├── app.config.ts           ← Expo config
+  ├── WINDOWS_SETUP.md        ← Detailed guide
+  └── WINDOWS_QUICK_START.txt ← This file
+
+================================================================================
+VERIFICATION
+================================================================================
+
+Before running:
+  ✓ Node.js installed: node --version
+  ✓ pnpm installed: pnpm --version
+  ✓ Android Studio installed (for Android)
+  ✓ Expo Go app installed on phone
+
+After extraction:
+  ✓ pnpm install completes
+  ✓ pnpm check passes (zero TypeScript errors)
+  ✓ pnpm run dev:metro starts without errors
+  ✓ Expo Go connects and loads app
+
+================================================================================
+STATUS: WINDOWS-COMPATIBLE ✅
+Last Updated: April 21, 2026
+Tested On: Windows 10/11 with Node.js 18+
+================================================================================
