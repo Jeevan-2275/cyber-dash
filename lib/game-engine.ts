@@ -6,6 +6,7 @@
 import { AnimationEffects, EFFECT_PRESETS } from "./animation-effects";
 import { PowerUpSystem, PowerUpType } from "./power-up-system";
 import { CoinSystem } from "./coin-system";
+import { getScreenMetrics, getPlayerSize, getObstacleSize, scaleValue } from "./responsive-layout";
 
 export type GameState = "idle" | "playing" | "gameOver";
 
@@ -71,6 +72,9 @@ export class GameEngine {
   // Screen dimensions (will be set dynamically)
   private screenWidth: number = 375;
   private screenHeight: number = 812;
+  private screenMetrics = getScreenMetrics();
+  private playerSize = getPlayerSize(this.screenMetrics);
+  private obstacleSize = getObstacleSize(this.screenMetrics, "wall");
 
   // Callbacks
   private onStateChange: ((state: GameEngineState) => void) | null = null;
@@ -87,10 +91,10 @@ export class GameEngine {
       speed: this.BASE_SPEED,
       speedMultiplier: 1,
       player: {
-        x: 50,
+        x: scaleValue(50, this.screenMetrics),
         y: this.screenHeight * this.GROUND_LEVEL,
-        width: 30,
-        height: 40,
+        width: this.playerSize.width,
+        height: this.playerSize.height,
         velocityY: 0,
         isJumping: false,
         isSliding: false,
@@ -109,13 +113,20 @@ export class GameEngine {
   }
 
   /**
-   * Set screen dimensions
+   * Set screen dimensions and recalculate responsive sizes
    */
   public setScreenDimensions(width: number, height: number): void {
     this.screenWidth = width;
     this.screenHeight = height;
-    // Update ground level based on screen height
+    // Recalculate responsive metrics
+    this.screenMetrics = getScreenMetrics();
+    this.playerSize = getPlayerSize(this.screenMetrics);
+    this.obstacleSize = getObstacleSize(this.screenMetrics, "wall");
+    // Update player size and position
+    this.state.player.width = this.playerSize.width;
+    this.state.player.height = this.playerSize.height;
     this.state.player.y = this.screenHeight * this.GROUND_LEVEL;
+    this.state.player.x = scaleValue(50, this.screenMetrics);
   }
 
   /**

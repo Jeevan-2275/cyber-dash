@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, Pressable, GestureResponderEvent, Dimensions } from "react-native";
+import { View, Text, Pressable, GestureResponderEvent, Dimensions, useWindowDimensions } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 import { GameEngine, GameEngineState } from "@/lib/game-engine";
 import { useColors } from "@/hooks/use-colors";
@@ -20,8 +20,11 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
   const animationFrameRef = useRef<number | null>(null);
   const updateCounterRef = useRef(0);
 
-  const screenWidth = Dimensions.get("window").width;
-  const screenHeight = Dimensions.get("window").height;
+  const windowDimensions = useWindowDimensions();
+  const screenWidth = windowDimensions.width;
+  const screenHeight = windowDimensions.height;
+  const scale = Math.sqrt((screenWidth * screenHeight) / (375 * 812));
+  const responsiveFontSize = (baseSize: number) => Math.round(baseSize * Math.sqrt(scale));
 
   // Initialize game
   useEffect(() => {
@@ -123,10 +126,10 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
         >
           {/* Score */}
           <View>
-            <Text style={{ fontSize: 12, color: colors.muted }}>SCORE</Text>
+            <Text style={{ fontSize: responsiveFontSize(12), color: colors.muted }}>SCORE</Text>
             <Text
               style={{
-                fontSize: 24,
+                fontSize: responsiveFontSize(24),
                 fontWeight: "bold",
                 color: colors.primary,
                 marginTop: 4,
@@ -141,10 +144,10 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
 
           {/* Coins */}
           <View className="items-center">
-            <Text style={{ fontSize: 12, color: "#FFFF00" }}>COINS</Text>
+            <Text style={{ fontSize: responsiveFontSize(12), color: "#FFFF00" }}>COINS</Text>
             <Text
               style={{
-                fontSize: 20,
+                fontSize: responsiveFontSize(20),
                 fontWeight: "bold",
                 color: "#FFFF00",
                 marginTop: 4,
@@ -160,10 +163,10 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
           {/* Combo */}
           {gameState.combo > 0 && (
             <View className="items-center">
-              <Text style={{ fontSize: 12, color: "#FF006E" }}>COMBO</Text>
+              <Text style={{ fontSize: responsiveFontSize(12), color: "#FF006E" }}>COMBO</Text>
               <Text
                 style={{
-                  fontSize: 20,
+                  fontSize: responsiveFontSize(20),
                   fontWeight: "bold",
                   color: "#FF006E",
                   marginTop: 4,
@@ -179,10 +182,10 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
 
           {/* Speed Multiplier */}
           <View className="items-center">
-            <Text style={{ fontSize: 12, color: colors.muted }}>SPEED</Text>
+            <Text style={{ fontSize: responsiveFontSize(12), color: colors.muted }}>SPEED</Text>
             <Text
               style={{
-                fontSize: 20,
+                fontSize: responsiveFontSize(20),
                 fontWeight: "bold",
                 color: colors.primary,
                 marginTop: 4,
@@ -194,10 +197,10 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
 
           {/* High Score */}
           <View className="items-end">
-            <Text style={{ fontSize: 12, color: colors.muted }}>HIGH SCORE</Text>
+            <Text style={{ fontSize: responsiveFontSize(12), color: colors.muted }}>HIGH SCORE</Text>
             <Text
               style={{
-                fontSize: 24,
+                fontSize: responsiveFontSize(24),
                 fontWeight: "bold",
                 color: "#8B00FF",
                 marginTop: 4,
@@ -280,7 +283,7 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
             >
               <Text
                 style={{
-                  fontSize: 80,
+                  fontSize: responsiveFontSize(80),
                   fontWeight: "bold",
                   color: "#00D9FF",
                   textShadowColor: "#00D9FF",
@@ -302,17 +305,17 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
             }}
             style={{
               position: "absolute",
-              top: 16,
-              right: 16,
+              top: Math.round(16 * scale),
+              right: Math.round(16 * scale),
               zIndex: 50,
-              padding: 12,
+              padding: Math.round(12 * scale),
               backgroundColor: "rgba(0, 217, 255, 0.2)",
               borderRadius: 8,
               borderWidth: 1,
               borderColor: "#00D9FF",
             }}
           >
-            <Text style={{ color: "#00D9FF", fontWeight: "bold", fontSize: 12 }}>
+            <Text style={{ color: "#00D9FF", fontWeight: "bold", fontSize: responsiveFontSize(12) }}>
               {gameState.isPaused ? "RESUME" : "PAUSE"}
             </Text>
           </Pressable>
@@ -329,10 +332,10 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
                 zIndex: 100,
               }}
             >
-              <View style={{ gap: 16 }}>
+              <View style={{ gap: Math.round(16 * scale) }}>
                 <Text
                   style={{
-                    fontSize: 40,
+                    fontSize: responsiveFontSize(40),
                     fontWeight: "bold",
                     color: "#00D9FF",
                     textAlign: "center",
@@ -350,14 +353,14 @@ export function GameScreen({ onGameOver }: GameScreenProps) {
                     }
                   }}
                   style={{
-                    paddingVertical: 12,
-                    paddingHorizontal: 32,
+                    paddingVertical: Math.round(12 * scale),
+                    paddingHorizontal: Math.round(32 * scale),
                     backgroundColor: "#00D9FF",
                     borderRadius: 8,
                     alignItems: "center",
                   }}
                 >
-                  <Text style={{ color: "#000", fontWeight: "bold", fontSize: 16 }}>
+                  <Text style={{ color: "#000", fontWeight: "bold", fontSize: responsiveFontSize(16) }}>
                     RESUME
                   </Text>
                 </Pressable>
